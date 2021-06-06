@@ -14,7 +14,9 @@ const App = () => {
       {match}
     </>
   ) : (
-    <ErrorPage />
+    <>
+      <ErrorPage />
+    </>
   );
 };
 

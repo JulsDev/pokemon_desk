@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import cn from 'classnames';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Layout from '../../components/Layout';
 import Heading from '../../components/Heading';
@@ -10,13 +11,17 @@ import as from '../../App.module.scss';
 
 import useDebounce from '../../hook/useDebaunce';
 import useData, { IData } from '../../hook/useData';
+import { getPokemonsTypes, getTypesAction } from '../../reducers/pokemons';
 
-interface IQuery {
+export interface IQuery {
   name?: string;
   limit?: number;
 }
 
 const Pokedex: React.FC = () => {
+  const dispatch = useDispatch();
+  const types = useSelector(getPokemonsTypes);
+  console.log('### types', types);
   const [searchValue, setSearchValue] = useState('');
   const [query, setQuery] = useState<IQuery>({
     limit: 9,
@@ -24,6 +29,10 @@ const Pokedex: React.FC = () => {
 
   const debauncedValue = useDebounce(searchValue, 1000);
   const { data, isLoading, isError } = useData<IData>('getPokemons', query, [debauncedValue]);
+
+  useEffect(() => {
+    dispatch(getTypesAction());
+  }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value as string);
